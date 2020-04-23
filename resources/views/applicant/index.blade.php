@@ -25,7 +25,6 @@
   </style>
   <div class="container">
   <h2 class="alert alert-success">Laravel CRUD Application</h2>
-
   <div class="row">
     <!-- Add applicant button -->
     <style media="screen">
@@ -33,7 +32,7 @@
         margin-bottom: 1%;
       }
     </style>
-  <a href="" class="btn btn-info" style="margin-left:87.5%" data-toggle="modal" data-target="#exampleModal">ADD AN APPLICANT</a>
+  <a href="" class="btn btn-info" style="margin-left:87%" data-toggle="modal" data-target="#exampleModal">CREATE APPLICATION</a>
   <div class="col-md-12">
 
   @if($message = Session::get('success'))
@@ -41,7 +40,7 @@
     <p>{{ $message }}</p>
   </div>
   @endif
-  <main style="margin: 0 auto; min-height: calc(110vh - 250px - -19px);">
+
   <!--TABLE-->
   <table class="table table-striped">
   <thead class="thead-dark">
@@ -266,7 +265,7 @@
                     <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name" readonly>
                     <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name" readonly>
                     </div>
-                    <input type="hidden" id="applicant_id" name="applicant_id" readonly>
+                    <input type="hidden" id="applicant_id" name="applicant_id">
                     <br>
                     <div class="input-group">
                     <div class="input-group-prepend">
@@ -277,12 +276,11 @@
                         color:gray;
                       }
                     </style>
-                    <!-- <select class="dropdown" name="gender" id="gender" placeholder"Select Gender" readonly>
-                      <option value="Not Specified">Select Gender</option>
+                    <select class="dropdown" name="gender" id="gender" placeholder"Select Gender" disabled>
+                      <option value="Not Specified"Select Gender</option>
                       <option value="M">Male</option>
                       <option value="F">Female</option>
-                    </select> -->
-                    <input type="text" class="form-control" name="position" id="gender" placeholder="Enter Desired Position" readonly>
+                    </select>
                     </div>
                     <br>
                     <div class="input-group">
@@ -298,9 +296,12 @@
                     <textarea type="text" class="form-control" name="about" id="about" rows="8" cols="80" placeholder="Applicant Summary" readonly></textarea>
                     </div>
                     <br>
+
+
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-warning">Show Applicant</button>
                   </div>
                   </form>
                 </div>
@@ -311,20 +312,8 @@
   </div>
   </div>
   </div>
-</main>
-  <!-- Footer -->
-  <footer class="page-footer font-small blue" style="background:#212529;">
-
-    <!-- Copyright -->
-    <div class="footer-copyright text-center py-3" style="color:white;">© <script type="text/javascript">document.write(new Date().getFullYear())</script> Copyright:
-      <a href="https://www.instagram.com/_thereelj/"> Jezreel Jann V. Yañez</a>
-    </div>
-    <!-- Copyright -->
-
-  </footer>
-  <!-- Footer -->
-  <script>
   </body>
+  <script>
     $('#exampleModal-edit').on('show.bs.modal', function(event){
       var button = $(event.relatedTarget)
       var first_name = button.data('first_name')
@@ -379,7 +368,6 @@
     });
 
   </script>
-
 
 
 </html>
