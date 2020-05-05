@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <meta charset="utf-8">
-    <title>Laravel CRUD Application</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Applicant CRUD App</title>
 
     <!--Bootstrap-->
       <!--CSS-->
@@ -32,7 +32,7 @@
         margin-bottom: 1%;
       }
     </style>
-  <a href="" class="btn btn-info" style="margin-left:87%" data-toggle="modal" data-target="#exampleModal">CREATE APPLICATION</a>
+  <a href="" class="btn btn-info" style="margin-left:87%" id="add_applicant" data-toggle="modal" data-target="#exampleModal">CREATE APPLICATION</a>
   <div class="col-md-12">
 
   @if($message = Session::get('success'))
@@ -40,31 +40,32 @@
     <p>{{ $message }}</p>
   </div>
   @endif
-
   <!--TABLE-->
   <table class="table table-striped">
   <thead class="thead-dark">
     <tr>
-    <th>#</th>
-    <th>First Name</th>
-    <th>Last Name</th>
-    <th>Gender</th>
-    <th>Position</th>
-    <th>Remarks</th>
-    <th></th>
+      <th><input type="checkbox" id="select_all" class="selectall"></th>
+      <th>#</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Gender</th>
+      <th>Position</th>
+      <th>Remarks</th>
+      <th></th>
     </tr>
     <tbody>
     @foreach($applicants as $key=>$applicant)
       <tr>
+        <td><input type="checkbox" id="single_box" name="ids[]" class="selectbox" value="{{ $applicant->id }}"></td>
         <td>{{ ++$key }}</td>
         <td>{{ $applicant->first_name }}</td>
         <td>{{ $applicant->last_name }}</td>
         <td>{{ $applicant->gender }}</td>
         <td>{{ $applicant->position }}</td>
         <td>{{ $applicant->about }}</td>
-        <td>
+        <td  width="250">
           <!--READ BUTTON-->
-          <button type="button" data-applicant_id="{{ $applicant->id }}"
+          <button type="button" id="read_button" data-applicant_id="{{ $applicant->id }}"
             data-first_name="{{ $applicant->first_name }}"
             data-last_name="{{ $applicant->last_name }}"
             data-gender="{{ $applicant->gender }}"
@@ -73,7 +74,7 @@
             data-toggle="modal" data-target="#exampleModal-read" class="btn btn-primary btn-sm">READ INFORMATION</button>
           <!--END OF READ BUTTON-->
           <!--EDIT BUTTON-->
-          <button type="button" data-applicant_id="{{ $applicant->id }}"
+          <button type="button" id="edit_button" data-applicant_id="{{ $applicant->id }}"
             data-first_name="{{ $applicant->first_name }}"
             data-last_name="{{ $applicant->last_name }}"
             data-gender="{{ $applicant->gender }}"
@@ -81,7 +82,7 @@
             data-about="{{ $applicant->about }}"
             data-toggle="modal" data-target="#exampleModal-edit" class="btn btn-secondary btn-sm">UPDATE</button>
           <!--END OF EDIT BUTTON-->
-          <button type="button" data-applicant_id="{{ $applicant->id }}" data-toggle="modal" data-target="#exampleModal-delete" class="btn btn-dark btn-sm">DELETE</button>
+          <button type="button" id="delete_button" data-applicant_id="{{ $applicant->id }}" data-toggle="modal" data-target="#exampleModal-delete" class="btn btn-dark btn-sm">DELETE</button>
         </td>
       </tr>
       @endforeach
@@ -89,7 +90,26 @@
       {{ $applicants->links() }}
   </thead>
   </table>
-
+  <!-- <form method="post">
+    @csrf
+    @method('DELETE')
+    <button type="button" data-applicant_id="{{ $applicant->id }}" data-toggle="modal" data-target="#exampleModal-delete" class="btn btn-dark btn-sm">DELETE SELECTED</button>
+  </form> -->
+  <script type="text/javascript">
+    $('.selectall').click(function(){
+      $('.selectbox').prop('checked', $(this).prop('checked'));
+    })
+    $('.selectbox').change(function(){
+      var total = $('.selectbox').length;
+      var number = $('.selectbox:checked').length;
+      if(total == number){
+        $('.selectall').prop('checked', true);
+      }
+      else{
+        $('.selectall').prop('checked', false);
+      }
+    })
+  </script>
   <!--END OF TABLE-->
 
   <!--ADD NEW APPLICANT MODAL-->
@@ -105,49 +125,69 @@
           <div class="modal-body">
           <form class="" action="{{ route('applicant.store') }}" method="post">
           @csrf
+            <!-- First and Last Name -->
             <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text">First Name and Last Name</span>
             </div>
-            <input type="text" class="form-control" name="first_name" placeholder="Enter First Name">
-            <input type="text" class="form-control" name="last_name" placeholder="Enter Last Name">
+            <input type="text" class="form-control" id="f_name" name="first_name" placeholder="Enter First Name" required>
+            <input type="text" class="form-control" id="l_name" name="last_name" placeholder="Enter Last Name" required>
             </div>
+            <!-- End First and Last Name -->
             <br>
+            <!-- Gender -->
             <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text">Gender</span>
             </div>
+            </div>
+            <div class="form-check" style="margin-left:1%">
+              <input class="form-check-input" type="radio" name="gender" id="gender_male" value="M" required>
+              <label class="form-check-label" for="gender_male">
+                Male
+              </label>
+            </div>
+            <div class="form-check" style="margin-left:1%">
+              <input class="form-check-input" type="radio" name="gender" id="gender_female" value="F" required>
+              <label class="form-check-label" for="gender_female">
+                Female
+              </label>
+            </div>
+            <br>
+            <!-- Gender End -->
+            <!-- Position -->
+            <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Position</span>
+            </div>
+            <br>
             <style media="screen">
               .dropdown{
                 color:gray;
               }
             </style>
-            <select class="dropdown" name="gender" placeholder"Select Gender">
-              <option value="Not Specified">Select Gender</option>
-              <option value="M">Male</option>
-              <option value="F">Female</option>
+            <select class="dropdown" id="pos_drop" name="position" placeholder"Select Position" required>
+              <option value="">Select Position</option>
+              <option id="1" value="Front End Developer">Front End Developer</option>
+              <option id="2" value="QA Specialist">QA Specialist</option>
+              <option id="3" value="Web Designer">Web Designer</option>
+              <option id="4" value="UI/UX Designer">UI/UX Designer</option>
             </select>
             </div>
-            <br>
-            <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">Position</span>
-            </div>
-            <input type="text" class="form-control" name="position" placeholder="Enter Desired Position">
-            </div>
+            <!-- Position End -->
             <br>
             <div class="input-group">
             <div class="input-group-prepend">
             </div>
-            <textarea type="text" class="form-control" name="about" rows="8" cols="80" placeholder="Applicant Summary"></textarea>
+            <textarea type="text" id="remarks_area" class="form-control" name="about" rows="8" cols="80" placeholder="Applicant Summary" required></textarea>
             </div>
             <br>
 
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-success">Save Applicant</button>
+            <button type="button" id="cancel_submit" class="btn btn-warning" data-dismiss="modal">Close</button>
+            <button type="submit" id="submit_applicant" class="btn btn-success">Save Applicant</button>
           </div>
           </form>
         </div>
@@ -172,11 +212,12 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">First Name and Last Name</span>
               </div>
-              <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name">
-              <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name">
+              <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name" required>
+              <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name" required>
               </div>
               <input type="hidden" id="applicant_id" name="applicant_id">
               <br>
+              <!-- Gender -->
               <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text">Gender</span>
@@ -193,17 +234,32 @@
               </select>
               </div>
               <br>
+              <!-- Gender End -->
+              <!-- Position -->
               <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text">Position</span>
               </div>
-              <input type="text" class="form-control" name="position" id="position" placeholder="Enter Desired Position">
+              <br>
+              <style media="screen">
+                .dropdown{
+                  color:gray;
+                }
+              </style>
+              <select class="dropdown" name="position" id="position" placeholder"Select Position" required>
+                <option value="">Select Position</option>
+                <option value="Front End Developer">Front End Developer</option>
+                <option value="QA Specialist">QA Specialist</option>
+                <option value="Web Designer">Web Designer</option>
+                <option value="UI/UX Designer">UI/UX Designer</option>
+              </select>
               </div>
+              <!-- Position End -->
               <br>
               <div class="input-group">
               <div class="input-group-prepend">
               </div>
-              <textarea type="text" class="form-control" name="about" id="about" rows="8" cols="80" placeholder="Applicant Summary"></textarea>
+              <textarea type="text" class="form-control" name="about" id="about" rows="8" cols="80" placeholder="Applicant Summary" required></textarea>
               </div>
               <br>
 
@@ -211,7 +267,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-info">Update Applicant</button>
+              <button type="submit" id="update_applicant" class="btn btn-info">Update Applicant</button>
             </div>
             </form>
           </div>
@@ -237,8 +293,8 @@
 
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-warning" data-dismiss="modal">No / Cancel</button>
-                  <button type="submit" class="btn btn-danger">Yes / Delete Applicant</button>
+                  <button type="button" id="delete_cancel" class="btn btn-warning" data-dismiss="modal">No / Cancel</button>
+                  <button type="submit" id="delete_yes" class="btn btn-danger">Yes / Delete Applicant</button>
                 </div>
                 </form>
               </div>
@@ -300,8 +356,7 @@
 
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-warning">Show Applicant</button>
+                    <button type="button" id="close_show" class="btn btn-info" data-dismiss="modal">Close</button>
                   </div>
                   </form>
                 </div>
@@ -313,6 +368,17 @@
   </div>
   </div>
   </body>
+  <!-- Footer -->
+  <footer class="page-footer font-small blue">
+
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3">© 2020 Copyright:
+      <a href="https://instagram.com/_thereelj/" id="IG_link">IG: Jez Yañez</a>
+    </div>
+    <!-- Copyright -->
+
+  </footer>
+  <!-- Footer -->
   <script>
     $('#exampleModal-edit').on('show.bs.modal', function(event){
       var button = $(event.relatedTarget)
