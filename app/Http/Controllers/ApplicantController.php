@@ -82,6 +82,7 @@ class ApplicantController extends Controller
      */
     public function update(Request $request)
     {
+
       $applicant = array(
         'first_name' => $request->first_name,
         'last_name' => $request->last_name,
@@ -89,8 +90,6 @@ class ApplicantController extends Controller
         'position' => $request->position,
         'about' => $request->about
       );
-
-      // echo "<pre>"; print_r($applicant); die;
 
       Applicant::findOrfail($request->applicant_id)->update($applicant);
       return redirect()->route('applicant.index')->with('success', 'Information Updated Successfully');
@@ -108,6 +107,15 @@ class ApplicantController extends Controller
         $delete_applicant= Applicant::findOrfail($applicant->applicant_id);
         $delete_applicant->delete();
         return redirect()->route('applicant.index')->with('success', 'Information Deleted Successfully');
+
+
+    }
+
+    public function delete_all(Request $request)
+    {
+      $ids = $request->get('ids');
+      $dbs = DB::delete('delete from applicants where id in('.implode(",", (array) $ids).')');
+      return redirect('applicant');
     }
 
 }
